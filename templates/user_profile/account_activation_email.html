@@ -1,0 +1,9 @@
+{% autoescape off %}
+To initate the password reset process for your {{user.get_username}} Account,
+
+click the link below:
+
+{{ protocol }}://{{ domain }}{% url 'account-activation' uidb64=uid token=token %}
+
+
+{% endautoescape %}

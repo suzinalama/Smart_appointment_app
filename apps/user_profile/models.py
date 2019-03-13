@@ -27,6 +27,8 @@ class User(AbstractUser):
 
 	def __str__(self):
 		return self.username
+	
+
 
 class Contact(models.Model):
  	user=models.ForeignKey(User, on_delete = models.CASCADE, related_name="contacts")
@@ -45,15 +47,22 @@ class Doctor(models.Model):
  	time_slot=models.DurationField()
 
  	def __str__(self):
- 		return self.user.username
+ 		return f'{self.user.username} Doctor'
 
+	
 class Patient(models.Model):
 	user=models.OneToOneField(User,on_delete=models.CASCADE, primary_key=True)
 	height=models.PositiveIntegerField()
 	weight=models.PositiveIntegerField()
 	
 	def __str__(self):
- 		return self.user
+ 		return f'{self.user.username} Patient'
+
+class Admin(models.Model):
+	user=models.OneToOneField(User,on_delete=models.CASCADE, primary_key=True)
+		
+	def __str__(self):
+ 		return f'{self.user.username} Admin'
 
 
 

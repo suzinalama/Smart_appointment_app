@@ -3,7 +3,7 @@ from apps.user_profile.models import Doctor,User
 from apps.hospital.models import Hospital
 
 
-# Create your models here.
+
 
 class DaySchedule(models.Model):
 	MONDAY =1
