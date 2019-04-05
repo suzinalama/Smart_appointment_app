@@ -1,0 +1,84 @@
+{% extends "partial/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+    <div class="content-section">
+        <form method="POST" id="appointmentForm" data-doctors-url="{% url 'ajax_load_doctors' %}" data-timeslots-url="{% url 'ajax_load_timeslots'%}" > 
+            {% csrf_token %}
+            <fieldset class="form-group">     
+                
+                <legend class="border-bottom mb-4">Book Appointment</legend>
+               
+                {{ form|crispy }}
+           
+               
+                <div id="time_slots" class="form-group"></div>
+               
+
+            </fieldset>
+            <input type="hidden" name="next" value="{{ next }}">
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Request an Appointment</button>
+            </div>
+        </form>
+
+     
+    </div>
+
+    {% endblock content %}
+
+    {% block rightpane %}
+        {% include 'user_profile/info.html' %}
+    {% endblock %}
+
+{% block script %}
+{% include "partial/script.html" %}
+
+
+<script>
+    var date;
+    var time_slots;
+    $('#id_appointment_date').change(function(){
+        date =$(this).val();
+        console.log(date)
+    });
+
+    $('#id_department').change(function() {
+        var url = $('#appointmentForm').attr('data-doctors-url'); // get the url of the `load_doctors` view
+        console.log("HERE:"+url)
+        var departmentId = $(this).val(); // get the selected department ID from the HTML input
+
+        $.ajax({
+        // initialize an AJAX request
+        url: url, // set the url of the request (= localhost:8000/appointment/ajax/load-doctor/)
+        data: {
+        department: departmentId // add the department id to the GET parameters
+        },
+        success: function(data) {
+        // `data` is the return of the `load_doctors` view function
+        $('#id_doctor').html(data); // replace the contents of the doctors input with the data that came from the server
+        }
+        });
+    });
+
+    $('#id_doctor').change(function(){
+        var url=$('#appointmentForm').attr('data-timeslots-url');
+        var doctorId=$(this).val();
+
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-doctor/)
+            data: {
+                date:date,
+                doctor: doctorId       // add the department id to the GET parameters
+            },
+            success: function (data) {   // `data` is the return of the `load_doctors` view function
+            $("#time_slots").html(data);  // replace the contents of the city input with the data that came from the server
+            }
+        });
+
+    });
+</script>
+
+{% endblock script %}
+

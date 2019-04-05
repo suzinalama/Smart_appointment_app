@@ -1,0 +1,27 @@
+{% extends "partial/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+    <div class="content-section">
+        <form method="POST"  > 
+            {% csrf_token %}
+            <fieldset class="form-group">     
+                
+                <legend class="border-bottom mb-4">Prescription</legend>
+               
+                {{ form|crispy }}
+                <div id="time_slots" class="form-group"></div>
+               
+
+            </fieldset>
+            <input type="hidden" name="next" value="{{ next }}">
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Send Prescription</button>
+            </div>
+        </form>
+
+     
+    </div>
+
+    {% endblock content %}

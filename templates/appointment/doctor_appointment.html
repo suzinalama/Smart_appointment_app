@@ -1,0 +1,110 @@
+{% extends "partial/base.html" %}
+{% load static %}
+{% block content %}
+<!-- Check length for available appointment -->
+{% if appointment_list|length == 0 %}
+<li class="list-group-item">No apointments available</li>
+
+
+{% else %}
+
+<table class="table table-hover">
+    <thead >
+      <tr>
+      
+      
+        <th scope="col">#</th>
+        <th scope="col">Date</th>
+        <th scope="col">Status</th>
+        <th scope="col">Handle</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for appointment in appointment_list %}
+    {{ appointment.status }}
+
+      <tr>
+     
+        <th scope="row" > 1 </th>
+         
+        <td class='clickable-row' data-href="{% url 'prescription' %}"><a href="{% url 'prescription' %}"> {{appointment.appointment_date}}</td>
+        <td>
+                {%if appointment.status == 3 %} Waiting {% endif %}
+                {%if appointment.status == 2 %} Cancelled {% endif %}
+                {%if appointment.status == 1 %} Confirmed {% endif %}
+
+
+
+        </td>
+       <td>
+           <div class="dropdown">
+               <button 
+                class="btn btn-secondary dropdown-toggle"
+                type="button"
+                id="dropdownMenu2"
+                data-toggle="dropdown"
+                aria-haspopup="true">Action</button>
+
+            {% if appointment.status == 3 %}
+            <div class="dropdown-menu">  
+                <a  data-appointment-id="{{appointment.id}}" data-select-status="{% url 'update-appointment-status' %}" name="action" value="2" class="dropdown-item update_status"  >Cancel</a>
+                <a  data-appointment-id="{{appointment.id}}" data-select-status="{% url 'update-appointment-status' %}" name="action" value="1" class="dropdown-item update_status " >Confirmed</a>
+                {% endif %}
+            </div>
+
+           
+
+       </td>
+       </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+{% endblock  %}
+
+  {% block script %}
+  {% include "partial/script.html" %}
+  
+  <script>
+
+      $('.update_status').on('click', function () {
+      var url=$('.update_status').attr('data-select-status');
+      var appointment_id = $(this).data("appointment-id")
+      console.log("id" + appointment_id + url)
+      var status = $(this).text();
+        console.log(status+"value")
+        if (status === "Cancel")
+        {
+          status=2
+        }
+        else{
+          status = 1
+        }
+        console.log(status+"final")
+
+
+      $.ajax({                       
+          url: url,                   
+          data: {
+             status:status,
+             appointment_id:appointment_id,
+                 },
+          success: function (data) {   
+            setTimeout(function(){
+              location.reload();
+            }, 1000); //reload time
+          }
+        });
+    
+        });
+        jQuery(document).ready(function($) {
+        $(".clickable-row").click(function() {
+            url = $(this).data("href");
+        });
+});
+      </script>
+  
+    {% endblock script %}
+
+
+

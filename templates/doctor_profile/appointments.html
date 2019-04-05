@@ -1,0 +1,15 @@
+{% extends "partial/base.html" %}
+
+{% block appointing %}
+
+{% for appoint in appointments %}
+<article class="media content-section">
+  <div class="media-body">
+      <div class="list-group-item list-group-item-info ">Date : {{ appoint.date }} {{ appoint.time_slot}} 
+        <button class="btn btn-primary btn-sm" type="submit">Confirm</button>
+     </div>
+  </div>
+</article>
+{% endfor %}
+    
+{% endblock appointing %}

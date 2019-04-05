@@ -14,6 +14,7 @@
 # ]
 
 from django.urls import path
+
 from . import views
 from .views import UserIndexView,UserAboutView,UserContactView,UserServicesView
 
@@ -22,6 +23,7 @@ urlpatterns = [
     path('about', UserAboutView.as_view(), name ='app-about'),
     path('services', UserServicesView.as_view(), name ='app-services'),
     path('contact', UserContactView.as_view(), name ='app-contact'),
+
     # path('book/', views.contact, name ='app-book'),
     # path('billPayment/', views.contact, name ='app-billPay'),
     # path('findDoctor/', views.contact, name ='app-findDoc'),

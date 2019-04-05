@@ -1,0 +1,10 @@
+<select
+  id="id_appointment_date"
+  class="select form-control"
+  name="appointment_date"
+>
+  <option value="">---------</option>
+  {% for available in availabilities %}
+  <option value="{{ available.date }}" name="appointment_date">{{ available.date }}</option>
+  {% endfor %}
+</select>

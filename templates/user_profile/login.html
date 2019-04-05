@@ -1,5 +1,8 @@
 {% extends "partial/base.html" %}
 {% load crispy_forms_tags %}
+{% block header %}
+{% include "partial/header.html" %}
+{% endblock %}
 {% block content %}
     <div class="content-section">
         <form method="POST">
@@ -23,3 +26,7 @@
         </div>
     </div>
 {% endblock content %}
+
+{% block rightpane %}
+    {% include "partial/rightpane.html" %}
+{% endblock rightpane %}

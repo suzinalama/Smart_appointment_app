@@ -38,8 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'crispy_forms',
+   
 
+    'crispy_forms',
+    'notifications',
 
     'apps.user_profile',
     'apps.hospital',
@@ -135,9 +137,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-LOGIN_REDIRECT_URL = 'app-index'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 AUTH_USER_MODEL='user_profile.User'
+LOGIN_REDIRECT_URL = 'app-index'
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
@@ -145,3 +147,8 @@ EMAIL_HOST_USER= "hospitalapp123@gmail.com"
 EMAIL_HOST_PASSWORD="thisisit*8520"
 EMAIL_PORT= 587
 EMAIL_USE_TLS= True
+CRISPY_TEMPLATE_PACK='bootstrap4'
+
+MEDIA_URL='/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+#LOGIN_REDIRECT_URL = 'app-index'

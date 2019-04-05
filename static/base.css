@@ -1,5 +1,6 @@
+
 body {
-  background: #fafafa;
+  background: #9db2c0;
   color: #333333;
   margin-top: 5rem;
 }
@@ -12,7 +13,7 @@ ul {
   margin: 0;
 }
 
-.bg-steel {
+.bg-steel { 
   background-color: #5f788a;
 }
 
@@ -41,12 +42,17 @@ ul {
 }
 
 a.article-title:hover {
-  color: #428bca;
+  color: #3f6485;
   text-decoration: none;
 }
 
 .article-content {
   white-space: pre-line;
+}
+
+.navbar-nav .usernameUser{
+  margin-top: 2px;
+  color: white;
 }
 
 .article-img {
@@ -82,3 +88,8 @@ a.article-title:hover {
 .account-heading {
   font-size: 2.5rem;
 }
+
+.row{
+  background: #d9e3e4;
+}
+

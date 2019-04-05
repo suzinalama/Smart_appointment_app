@@ -1,0 +1,47 @@
+{% extends 'partial/base.html' %}
+<!-- to load static files like js, css -->
+{% load static %}
+
+<!-- load crispy tag -->
+{% load crispy_forms_tags %}
+<!-- main block  -->
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">Create your availibility</h4>
+
+    <form
+      method="post"
+      id="appointmentForm"
+      data-available-date-url="{% url 'ajax_load_available_date' %}"
+      data-doctors-url="{% url 'ajax_load_doctors' %}"
+      data-timeslots-url="{% url 'ajax_load_timeslots' %}"
+    >
+      {% if messages %} {% for message in messages %}
+      {{ message }}
+      {% endfor %} {% endif %} {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}" />
+
+      {{ form | crispy }}
+      <div id="time_slots" class="form-group"></div>
+
+      <button type="submit" class="btn btn-primary btn-block">Create</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %} 
+
+{% block rightpane %} 
+{% include "partial/rightpane.html" %}
+{%endblock %} 
+{% block script %}
+{% include "partial/script.html" %}
+<script>
+  $(function() {
+    console.log('here');
+    $('#datepicker').datepicker({ dateFormat: "yy-mm-dd" });
+  });
+</script>
+
+{% endblock %}

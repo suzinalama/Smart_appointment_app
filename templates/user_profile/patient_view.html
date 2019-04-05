@@ -1,0 +1,25 @@
+{% extends "partial/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block rightpane %}
+
+<h3>Your Information</h3>
+               
+               
+<h6>Name: {{ user.first_name.capitalize }} {{ user.last_name.capitalize }}</h6>
+<h6>Date of Birth: {{ user.dob }}</h6>
+<h6>Email: {{ user.email }}</h6>
+<h6>Gender: {{ user.gender }}</h6>
+<h6>Blood Group {{user.blood_groups}}</h6>
+
+
+
+
+<ul class="list-group">
+  <a href="{% url 'patient-report' %}" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">View Report</a><br>
+  <a href="{% url 'appointment-add' %}" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">Book Appoinment</a><br>
+  <a href="{% url 'logout' %}" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">Find a Doctor</a><br>
+  <a href="{% url 'logout' %}" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">Pay Bill</a><br>
+</ul>
+
+{% endblock  %}

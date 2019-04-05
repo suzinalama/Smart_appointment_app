@@ -18,6 +18,22 @@
             </small>
         </div>
     </div>
+    
+   
 {% endblock content %}
+
+{% block script %}
+{% include "partial/script.html" %}
+
+<script>
+        $( function() {
+            $( "#id_dob"  ).datepicker({
+            changeMonth: true,
+            changeYear:true
+    },{dateFormat: "yy-mm-dd"});
+        });
+    </script>
+{% endblock script %}
+
 
 

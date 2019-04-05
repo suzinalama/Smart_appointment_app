@@ -1,7 +1,7 @@
-{% extends "partial/profile.html" %}
+{% extends "partial/base.html" %}
 {% load crispy_forms_tags %}
-{% block content %}
-     <h1>{{ user.username }}</h1> 
+{% block info %}
+  {% csrf_token %}
      <div class="content-section">
       <div class="media">
     
@@ -9,9 +9,6 @@
           <h2 class="account-heading">{{ user.username }}</h2>
           <p class="text-secondary">{{ user.email }}</p>
         </div>
-      </div>
-      <!-- FORM HERE -->
-    </div>
-
-
-{% endblock content %}
+      </div></div>
+      
+  {% endblock info %}

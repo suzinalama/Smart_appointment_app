@@ -1,0 +1,13 @@
+<!-- {% include "django/forms/widgets/input.html" %} -->
+
+{% extends "partial/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<script>
+  $(function () {
+    $("input[name='{{ widget.name }}']").datepicker({
+      format:'dd/mm/yyyy',
+    });
+  });
+</script>
+{% endblock %}

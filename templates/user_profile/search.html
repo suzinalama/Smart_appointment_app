@@ -1,0 +1,74 @@
+{% extends "partial/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<head>
+         
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+
+
+    <div class="content-section">
+
+   
+                <div class="col-12 col-md-10 col-lg-8">
+                    <form class="card card-sm" method="GET" action="{% url 'search' %}">
+                        
+                        <div class="card-body row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <i class="fas fa-search h4 text-body"></i>
+                            </div>
+                            
+                            <div class="col">
+                                <input class="form-control form-control-lg form-control-borderless" 
+                                    name="q" value="{{ request.GET.q }}" 
+                                    type="search"
+                                    placeholder="Search Doctors or Departments">
+                            </div>
+                            
+                            <div class="col-auto">
+                                <button class="btn btn-lg btn-success" type="submit">Search</button>
+                            </div>
+                           
+                        </div>
+                    </form>
+                </div>
+            
+        
+        <div class="border-top pt-3">
+          
+            <h3>Search Result</h3>
+            {% if searches|length == 0 %}
+            
+          
+            <h6> No record found </h6>
+            
+            {% else %}
+            {% for search in searches %}
+            
+           
+           
+            <article class="media content-section">
+                    <div class="media">
+                            <img class="img-thumbnail" alt="profile picture" src="{{ search.user.profile_pic.url }}">
+                    <div class="media-body">       
+                      <div class="article-metadata">
+                        <ol class="text-capitalize"> Username: {{ search.user.username}}</ol>
+                        <ol class="text-capitalize"> Name: {{ search.user.first_name}} {{ search.user.last_name}}</ol>
+                       
+                        <ol class="text-capitalize"> Department: {{ search.department}}</ol>
+                        <ol class="text-capitalize"> Education: {{ search.education}}</ol>
+                      </div>
+                      
+                    </div>
+                  </article>
+            {% endfor %}
+            {% endif %}
+
+        </div>
+
+    </div>
+{% endblock %}
+{% block rightpane %}
+{% include 'user_profile/info.html' %}
+{% endblock %}

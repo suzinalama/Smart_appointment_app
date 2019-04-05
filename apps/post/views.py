@@ -33,14 +33,13 @@
 
 
 
-
 from django.shortcuts import render
 from django.views import View
 from .models import Admin_post
 
 
 class UserIndexView(View):
-	index_template="post/index.html"  
+	index_template="partial/index.html"  
 	def get(self,request):
 		context = {
 			'posts': Admin_post.objects.all()

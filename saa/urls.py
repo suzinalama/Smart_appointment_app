@@ -15,13 +15,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from apps.user_profile import views as patient_views
+#from apps.user_profile import views as patient_views
+from apps.appointment import views as patient_appointment_views
+from django.conf import settings 
+from django.conf.urls.static import static
+
 #from apps.user_profile import views as signup_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/',include('apps.post.urls')),
     path('user/',include('apps.user_profile.urls')),
-    #path('signup/', signup_views.signup, name='signup'),
-    path('account/', patient_views.account, name='account'),
+    path('appointment/', include('apps.appointment.urls')),
+    path("api/notification", include("notifications.urls", namespace='notifications'))
+    # path('account/', patient_views.account, name='account'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
