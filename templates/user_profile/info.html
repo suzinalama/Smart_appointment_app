@@ -16,11 +16,12 @@
       <a href="{% url 'logout' %}" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">Pay Bill</a><br>      
     </ul>
     {% elif user.role == 2 %}
+
     <ul class="list-group">
-        <a href="#" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">View Report</a><br>
+        <a href="{% url 'create-availability' %}" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">Create Availability</a><br> 
         <a href="{% url 'appoint' %}" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">View Appointment</a><br>
-        <a href="{% url 'create-availability' %}" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">Create Availability</a><br>
-          
+        <a href="#" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">View Report</a><br>
       </ul>
     {% endif %}
+   
 {% endblock  %}

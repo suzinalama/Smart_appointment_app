@@ -1,11 +1,16 @@
 {% extends 'partial/base.html' %}
 <!-- to load static files like js, css -->
 {% load static %}
+{% block header %}
+{% include "partial/header.html" %}
 
+{% endblock header %}
 <!-- load crispy tag -->
 {% load crispy_forms_tags %}
 <!-- main block  -->
+
 {% block content %}
+{% if user.role == 2 %}
 <div class="card">
   <div class="card-body">
     <h4 class="card-title">Create your availibility</h4>
@@ -29,19 +34,16 @@
     </form>
   </div>
 </div>
-
-{% endblock %} 
-
-{% block rightpane %} 
-{% include "partial/rightpane.html" %}
-{%endblock %} 
 {% block script %}
 {% include "partial/script.html" %}
+
+{% endblock script %}
+
 <script>
   $(function() {
     console.log('here');
     $('#datepicker').datepicker({ dateFormat: "yy-mm-dd" });
   });
 </script>
-
+{% endif %}
 {% endblock %}

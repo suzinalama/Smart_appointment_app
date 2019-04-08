@@ -15,6 +15,14 @@ urlpatterns = [
     path(
         "ajax/load-available-date/", views.load_available_date, name="ajax_load_available_date"
     ), 
+    path("read-notification/doctor/",
+    views.doctor_response_notification,
+    name="doctor-response-notification",
+    ),
+    path("read-notification/patient/",
+    views.patient_response_notification,
+    name="patient-response-notification",
+    ),
 
 
   

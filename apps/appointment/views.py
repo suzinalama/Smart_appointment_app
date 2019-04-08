@@ -9,6 +9,7 @@ from apps.user_profile.models import Doctor,Patient,User
 from django.urls import reverse_lazy
 from .models import TimeSlot
 from django.db import transaction
+from django.views.decorators.csrf import csrf_protect
 
 from notifications.signals import notify
 import datetime
@@ -58,14 +59,15 @@ class AppoinmentCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         form.instance.patient=patient
         doctor=Doctor.objects.get(user= doctor_id)
         user=User.objects.get(pk=doctor.user.id)
-        notify.send(patient,recipient=user, verb="appointment created")
+        appointment=super().form_valid(form)
+        notify.send(patient,recipient=user, verb="appointment created", action_object=self.object)#insert related appointment object in notification table
 
         #form.cleaned_data["patient"]=patient #data related only to appointment model
         #print("Clean data: ",form.cleaned_data)
         # data["patient"]=patient
         # form.cleaned_data = data
         #Appointment.objects.create(**data) # first * -> key and * -> val
-        return super().form_valid(form)
+        return appointment
 
 class AppointmentUpdateView(UpdateView):
     model = Appointment
@@ -79,8 +81,10 @@ def load_doctors(request):
 
 def load_time_slots(request):
     date=request.GET.get("date")
+    print("date:", date)
+    pasrsed_date=datetime.datetime.strptime(date, "%B %d, %Y")
     doctor_id=request.GET.get("doctor")
-    available=Availability.objects.get(date=date,doctor_id=doctor_id)
+    available=Availability.objects.get(date=pasrsed_date,doctor_id=doctor_id)
     time_slot=available.available_time.filter(status=True)
     return render(request,"appointment/doctor_availability.html",{"time_slots":time_slot})
 
@@ -120,15 +124,25 @@ class DoctorAppointmentListView(ListView):
 @transaction.atomic
 def appointment_status_update(request):
     status=request.GET.get("status")
+    if int(status) == 1 :
+        verb="appointment confirmed"
+    if int(status) == 2 :
+        verb="appointment cancelled"
+
     appointment_id=request.GET.get("appointment_id")
     print(request.GET)
     print(status,appointment_id)
     update_appointment= Appointment.objects.get(id=appointment_id)
     update_appointment.status = status
     update_appointment.save()
+    patient = User.objects.get(pk=update_appointment.patient.pk)
+    notify.send(request.user,recipient=patient, verb=verb, action_object=update_appointment)#insert related appointment object in notification table
+
     print(dir(update_appointment))
     print("info>>>>>>>>>>>>>>>>>>>>>>", update_appointment.patient,update_appointment.doctor )
     doctor=Doctor.objects.get(user_id=request.user)
+    
+    #list of filtered appointments
     appointment_list= Appointment.objects.filter(doctor_id=doctor)
     
     return render(request,"appointment/doctor_appointment.html",{"appointment_list":appointment_list})
@@ -158,23 +172,72 @@ class AvailabilityCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView
         doctor = Doctor.objects.get(user=self.request.user.id)
         availability = Availability.objects.create(date=date, doctor=doctor)
         for timeslot in timeslots:
-            AvailableTime.objects.create(timeslot=timeslot, availablity=availability)
+            AvailableTime.objects.create(timeslot=timeslot, availability=availability)
         return HttpResponseRedirect(self.success_url)
 
 def load_available_date(request):
     date_object = datetime.date.today()
+    print(date_object)
     try:
-        availabilities = Availablity.objects.filter(date__gte=date_object).order_by("date")
-    except:
+        availabilities = Availability.objects.filter(date__gte=date_object).order_by("date")
+    except Exception as e:
         availabilities = None
+        print("something", e)
 
     print(availabilities)
 
     return render(request, "appointment/available_date.html", {"availabilities": availabilities})
 
-class PrescriptionView(ListView):
+
+
+@csrf_protect
+def doctor_response_notification(request):
+    print("here 1")
+    template_name = "appointment/appointment_request_notification.html"
+
+    slug = request.POST.get("slug")
+    send_by = request.POST.get("send_by")
+    notification = request.POST.get("notification")
+    receiver = User.objects.get(pk=send_by)
+    appointment = Appointment.objects.get(pk=notification)
+    print("here 2")
+    # notify.send(
+    #     request.user, recipient=receiver, verb="appointment created", action_object=appointment
+    # )
+    return render(request, template_name, {"appointment": appointment})
+
+
+def patient_response_notification(request):
+    template_name = "appointment/appointment_response_notification.html"
+    slug = request.POST.get("slug")
+    notification = request.POST.get("notification")
+    response = redirect("notifications:mark_as_read", slug=slug)
+    print(response)
+    appointment = Appointment.objects.get(pk=notification)
+    if appointment.status == 1:
+        appointment.status = "Confirmed"
+
+    if appointment.status == 2:
+        appointment.status = "Canceled"
+
+    # notify.send(
+    #     request.user, recipient=receiver, verb="appointment created", action_object=appointment
+    # )
+    return render(request, template_name, {"appointment": appointment})
+
+
+class PrescriptionView(CreateView):
     model = Prescription
     form_class= PrescriptionForm
-    template_name="appointment/prescription.html" 
+    prescription_table="appointment/prescription.html" 
     context_object_name="prescription"
 
+    def get(self,request):
+        context = {
+			'details': Patient.objects.all()
+		}
+	
+        return render(request, self.prescription_table,context)
+
+
+    

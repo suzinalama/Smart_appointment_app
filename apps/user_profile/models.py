@@ -23,7 +23,7 @@ class User(AbstractUser):
   	)
 	
 	GENDER_CHOICES=(("M","Male"),("F","Female"),("O","Other"))
-	BLOOD_GROUPS=(("A+","A+ve"),("B+","B+ve"),("A-","A-ve"),("B-","B-ve"),("O+","O+ve"),("O+","O-ve"))
+	BLOOD_GROUPS=(("A+","A+ve"),("B+","B+ve"),("A-","A-ve"),("B-","B-ve"),("AB+","AB+ve"),("AB-","AB-ve"),("O+","O+ve"),("O+","O-ve"))
 	role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES,null=True,blank=True)
 	gender = models.CharField(max_length=1,choices=GENDER_CHOICES,null=True,blank=True)
 	dob = models.DateField(null=True,blank=True)

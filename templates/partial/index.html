@@ -4,25 +4,29 @@
 {% include 'partial/header.html' %}
 {% endblock %}
 
+
 {% block content %}
-     {% for post in posts %}
-        <article class="media content-section">
-          <div class="media-body">
-            <div class="article-metadata">
-              <a class="mr-2">{{ post.user }}</a>
-              <small class="text-muted">{{ post.date_created }}</small>
-            </div>
-            <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
-            <p class="article-content">{{ post.post }}</p>
-          </div>
-        </article>
-    {% endfor %}
+{% for post in posts %}
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a class="mr-2">{{ post.user }}</a>
+      <small class="text-muted">{{ post.date_created }}</small>
+    </div>
+    <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
+    <p class="article-content">{{ post.post }}</p>
+  </div>
+</article>
+{% endfor %}
 {% endblock %}
+
 {% block rightpane %}
-{%  if user.is_authenticated %}     
+{%  if user.is_authenticated %} 
+
 {% include "user_profile/info.html" %}
 {% else %}
-    {% include "partial/rightpane.html" %}
+
+{% include "partial/rightpane.html" %}
 
 {% endif %}
 {% endblock %}

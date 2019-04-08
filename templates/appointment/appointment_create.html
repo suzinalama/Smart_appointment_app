@@ -1,10 +1,14 @@
 {% extends "partial/base.html" %}
+{% block header %}
+{% include "partial/header.html" %}
+
+{% endblock header %}
 {% load crispy_forms_tags %}
 {% block content %}
 
 
     <div class="content-section">
-        <form method="POST" id="appointmentForm" data-doctors-url="{% url 'ajax_load_doctors' %}" data-timeslots-url="{% url 'ajax_load_timeslots'%}" > 
+        <form method="POST" id="appointmentForm" data-doctors-url="{% url 'ajax_load_doctors' %}" data-available-date-url ="{% url 'ajax_load_available_date' %}" data-timeslots-url="{% url 'ajax_load_timeslots'%}" > 
             {% csrf_token %}
             <fieldset class="form-group">     
                 
@@ -37,13 +41,19 @@
 
 
 <script>
-    var date;
-    var time_slots;
-    $('#id_appointment_date').change(function(){
-        date =$(this).val();
-        console.log(date)
-    });
 
+    $(document).ready(function() {
+var url = $('#appointmentForm').attr('data-available-date-url');
+$.ajax({
+url: url, 
+success: function(data) {
+$('#id_appointment_date').replaceWith(data); // replace the contents of the doctors input with the data that came from the server
+}
+});
+});
+
+
+   
     $('#id_department').change(function() {
         var url = $('#appointmentForm').attr('data-doctors-url'); // get the url of the `load_doctors` view
         console.log("HERE:"+url)
@@ -69,7 +79,7 @@
         $.ajax({                       // initialize an AJAX request
             url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-doctor/)
             data: {
-                date:date,
+                date:$('#id_appointment_date').val(),
                 doctor: doctorId       // add the department id to the GET parameters
             },
             success: function (data) {   // `data` is the return of the `load_doctors` view function

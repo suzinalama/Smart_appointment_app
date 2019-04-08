@@ -4,24 +4,27 @@
 
 
     <div class="content-section">
-        <form method="POST"  > 
-            {% csrf_token %}
-            <fieldset class="form-group">     
-                
-                <legend class="border-bottom mb-4">Prescription</legend>
-               
-                {{ form|crispy }}
-                <div id="time_slots" class="form-group"></div>
-               
+            {% for detail in details %}
+             <h4 class="border-bottom mb-4">Prescription for {{ detail.user}} </h4>
+             <legend class="border-bottom mb-4"> Patient Details: </legend>
+             <h6>Name: {{ detail.user.first_name.capitalize }} {{ detail.user.last_name.capitalize }}</h6>
+             <h6>Date of Birth: {{ detail.user.dob }}</h6>
+             <h6>Email: {{ detail.user.email }}</h6>
+             <h6>Gender: {{ detail.user.gender }}</h6>
+             <h6>Blood Group {{detail.user.blood_groups}}</h6>
+             
+            {% endfor %}
 
-            </fieldset>
-            <input type="hidden" name="next" value="{{ next }}">
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Send Prescription</button>
-            </div>
-        </form>
-
-     
-    </div>
+         
+                    <form method="POST">
+                        {% csrf_token %}
+                        <fieldset class="form-group"> 
+                            {{ form|crispy }}
+                        </fieldset>
+                        <input type="hidden" name="next" value="{{ next }}">
+                        <div class="form-group">
+                            <button class="btn btn-outline-info" type="submit">Send Prescription</button>
+                        </div>
+                    </form>
 
     {% endblock content %}

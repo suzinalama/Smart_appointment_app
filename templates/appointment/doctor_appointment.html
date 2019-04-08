@@ -16,26 +16,32 @@
         <th scope="col">#</th>
         <th scope="col">Date</th>
         <th scope="col">Status</th>
+        <th scope="col">Start at</th>
+        <th scope="col">End at</th>
         <th scope="col">Handle</th>
       </tr>
     </thead>
     <tbody>
     {% for appointment in appointment_list %}
+    
     {{ appointment.status }}
 
       <tr>
      
         <th scope="row" > 1 </th>
-         
+        
         <td class='clickable-row' data-href="{% url 'prescription' %}"><a href="{% url 'prescription' %}"> {{appointment.appointment_date}}</td>
-        <td>
-                {%if appointment.status == 3 %} Waiting {% endif %}
-                {%if appointment.status == 2 %} Cancelled {% endif %}
-                {%if appointment.status == 1 %} Confirmed {% endif %}
+          <td>
+              {%if appointment.status == 3 %} Waiting {% endif %}
+              {%if appointment.status == 2 %} Cancelled {% endif %}
+              {%if appointment.status == 1 %} Confirmed {% endif %}
 
 
 
-        </td>
+      </td>
+          <td>{{ appointment.time_slot.available_from }}</td>
+          <td>{{ appointment.time_slot.available_to }}</td>
+  
        <td>
            <div class="dropdown">
                <button 
@@ -51,9 +57,6 @@
                 <a  data-appointment-id="{{appointment.id}}" data-select-status="{% url 'update-appointment-status' %}" name="action" value="1" class="dropdown-item update_status " >Confirmed</a>
                 {% endif %}
             </div>
-
-           
-
        </td>
        </tr>
     {% endfor %}

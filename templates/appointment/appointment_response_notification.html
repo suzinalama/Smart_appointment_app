@@ -1,0 +1,47 @@
+{% extends 'partial/base.html' %}
+<!-- to load static files like js, css -->
+{% load static %}
+
+<!-- load crispy tag -->
+{% load crispy_forms_tags %}
+<!-- header block -->
+{% block header%} {% include "appointment/notification.html" %} {% endblock %}
+<!-- appointment list -->
+
+{% block content %}
+<!-- length of appointments -->
+  {% if user.is_patient %} 
+    <p> Dear <b>{{ user.first_name }} {{ user.last_name }} </b>your appointment for {{ appointment.appointment_date }} had been responsed.  </p>
+    <p> Response status <b> {{ appointment.status }}</b> </p>
+  {% endif %} 
+<!-- end of if-->
+{% endblock %}
+
+{% block rightpane %} 
+{% include "partial/rightpane.html" %} 
+{%endblock %}
+
+{% block script %} 
+{% include "partial/script.html" %}
+<script>
+  $('.action-status').on('click', function(e) {
+    var appointment_id = $('.action-status').data('appointment-id');
+    var url = $('.action-status').data('status-update-url'); // get the url of the `load_doctors` view
+    var status = $('.action-status').data('status'); // get the selected department ID from the HTML input
+    console.log(url)
+    console.log(status)
+    $.ajax({
+      url: url,
+      data: {
+        status: status,
+        appointment_id: appointment_id
+      },
+      success: function(data) {
+        setTimeout(function() {
+          location.reload();
+        }, 1000);
+      }
+    });
+  });
+</script>
+{% endblock %}
