@@ -12,6 +12,7 @@ django-crispy-forms = "*"
 django-phone-field = "*"
 pillow = "*"
 django-notifications-hq = "*"
+django-paypal = "*"
 
 [requires]
 python_version = "3.6"

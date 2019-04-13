@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.views import View
 from .forms import UserAppointmentForm,PrescriptionForm,AvailabilityForm
 from django.contrib import messages
-from django.views.generic import CreateView,ListView,UpdateView
+from django.views.generic import CreateView,ListView,UpdateView,DetailView
 from apps.appointment.models import Appointment,TimeSlot,Availability,AvailableTime
 from .models import Appointment,Prescription, Availability
 from apps.user_profile.models import Doctor,Patient,User
@@ -10,6 +10,8 @@ from django.urls import reverse_lazy
 from .models import TimeSlot
 from django.db import transaction
 from django.views.decorators.csrf import csrf_protect
+from apps.payment.models import Payment
+from django.shortcuts import get_object_or_404
 
 from notifications.signals import notify
 import datetime
@@ -118,16 +120,16 @@ class DoctorAppointmentListView(ListView):
 
     def get_queryset(self):
         doctor=Doctor.objects.get(user_id=self.request.user)
-        
-        return Appointment.objects.filter(doctor_id=doctor)
-   
+      
+      
+        return Appointment.objects.filter(doctor_id=doctor )
+
+    
+ 
 @transaction.atomic
 def appointment_status_update(request):
     status=request.GET.get("status")
-    if int(status) == 1 :
-        verb="appointment confirmed"
-    if int(status) == 2 :
-        verb="appointment cancelled"
+    
 
     appointment_id=request.GET.get("appointment_id")
     print(request.GET)
@@ -136,6 +138,12 @@ def appointment_status_update(request):
     update_appointment.status = status
     update_appointment.save()
     patient = User.objects.get(pk=update_appointment.patient.pk)
+    if int(status) == 1 :
+        verb="appointment confirmed"
+        Payment.objects.create(appointment=update_appointment,patient=patient)
+    if int(status) == 2 :
+        verb="appointment cancelled"
+
     notify.send(request.user,recipient=patient, verb=verb, action_object=update_appointment)#insert related appointment object in notification table
 
     print(dir(update_appointment))
@@ -143,7 +151,7 @@ def appointment_status_update(request):
     doctor=Doctor.objects.get(user_id=request.user)
     
     #list of filtered appointments
-    appointment_list= Appointment.objects.filter(doctor_id=doctor)
+    appointment_list= Appointment.objects.filter(doctor_id=doctor,patient_id=patient)
     
     return render(request,"appointment/doctor_appointment.html",{"appointment_list":appointment_list})
 
@@ -239,5 +247,14 @@ class PrescriptionView(CreateView):
 	
         return render(request, self.prescription_table,context)
 
+class PrescriptionDetailView(DetailView):
+    model = Prescription
+    pres_detail_template="appointment/prescription_detail.html"
+    context_object_name = 'prescription'
+    
+    def catalog_detail_view(request, primary_key):
+        catalog = get_object_or_404(Prescription, pk=primary_key)
+        return render(request, pres_detail_template , context={'catalog': catalog})
+	
 
     

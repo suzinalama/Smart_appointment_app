@@ -1,5 +1,9 @@
 {% extends "partial/base.html" %}
 {% load static %}
+
+{% block header%}
+{% include "partial/header.html" %}
+{% endblock %}
 {% block content %}
 <!-- Check length for available appointment -->
 {% if appointment_list|length == 0 %}
@@ -14,8 +18,10 @@
       
       
         <th scope="col">#</th>
+        <th scope="col">Patient</th>
         <th scope="col">Date</th>
         <th scope="col">Status</th>
+        
         <th scope="col">Start at</th>
         <th scope="col">End at</th>
         <th scope="col">Handle</th>
@@ -25,12 +31,17 @@
     {% for appointment in appointment_list %}
     
     {{ appointment.status }}
+    
 
       <tr>
      
         <th scope="row" > 1 </th>
-        
-        <td class='clickable-row' data-href="{% url 'prescription' %}"><a href="{% url 'prescription' %}"> {{appointment.appointment_date}}</td>
+        <td><a href="{{ appointment.get_absolute_url }}"> {{appointment.patient}}</a></td>
+
+        <td> 
+            {{appointment.appointment_date}}
+            
+          </td>
           <td>
               {%if appointment.status == 3 %} Waiting {% endif %}
               {%if appointment.status == 2 %} Cancelled {% endif %}
@@ -39,7 +50,8 @@
 
 
       </td>
-          <td>{{ appointment.time_slot.available_from }}</td>
+        
+        <td> {{ appointment.time_slot.available_from }}</td>
           <td>{{ appointment.time_slot.available_to }}</td>
   
        <td>
@@ -49,13 +61,16 @@
                 type="button"
                 id="dropdownMenu2"
                 data-toggle="dropdown"
-                aria-haspopup="true">Action</button>
+                aria-haspopup="true"
+                aria-expanded="false">Action</button>
 
-            {% if appointment.status == 3 %}
             <div class="dropdown-menu">  
-                <a  data-appointment-id="{{appointment.id}}" data-select-status="{% url 'update-appointment-status' %}" name="action" value="2" class="dropdown-item update_status"  >Cancel</a>
-                <a  data-appointment-id="{{appointment.id}}" data-select-status="{% url 'update-appointment-status' %}" name="action" value="1" class="dropdown-item update_status " >Confirmed</a>
+                {% if appointment.status == 3 %}
+
+                <a id="cancel_status" data-appointment-id="{{appointment.id}}" data-select-status="{% url 'update-appointment-status' %}" name="action" value="2" class="dropdown-item update_status"  >Cancel</a>
+                <a id="confirm_status" data-appointment-id="{{appointment.id}}" data-select-status="{% url 'update-appointment-status' %}" name="action" value="1" class="dropdown-item update_status " >Confirmed</a>
                 {% endif %}
+            </div>
             </div>
        </td>
        </tr>
@@ -70,22 +85,11 @@
   
   <script>
 
-      $('.update_status').on('click', function () {
-      var url=$('.update_status').attr('data-select-status');
+      $('#cancel_status').on('click', function () {
+      var url=$('#cancel_status').attr('data-select-status');
       var appointment_id = $(this).data("appointment-id")
-      console.log("id" + appointment_id + url)
-      var status = $(this).text();
-        console.log(status+"value")
-        if (status === "Cancel")
-        {
-          status=2
-        }
-        else{
-          status = 1
-        }
-        console.log(status+"final")
-
-
+      console.log("cancel" + appointment_id + url)
+      var status = 2;
       $.ajax({                       
           url: url,                   
           data: {
@@ -100,11 +104,26 @@
         });
     
         });
-        jQuery(document).ready(function($) {
-        $(".clickable-row").click(function() {
-            url = $(this).data("href");
+
+        $('#confirm_status').on('click', function () {
+      var url=$('#confirm_status').attr('data-select-status');
+      var appointment_id = $(this).data("appointment-id")
+      console.log("confirm" + appointment_id + url)
+      var status = 1;
+      $.ajax({                       
+          url: url,                   
+          data: {
+             status:status,
+             appointment_id:appointment_id,
+                 },
+          success: function (data) {   
+            setTimeout(function(){
+              location.reload();
+            }, 1000); //reload time
+          }
         });
-});
+    
+        });
       </script>
   
     {% endblock script %}

@@ -15,11 +15,10 @@
 
 from django.urls import path
 
-from . import views
-from .views import UserIndexView,UserAboutView,UserContactView,UserServicesView
+from apps.post.views import UserIndexView,UserAboutView,UserContactView,UserServicesView
 
 urlpatterns = [
-    path('index', UserIndexView.as_view(), name ='app-index'),
+    path('', UserIndexView.as_view(), name ='app-index'),
     path('about', UserAboutView.as_view(), name ='app-about'),
     path('services', UserServicesView.as_view(), name ='app-services'),
     path('contact', UserContactView.as_view(), name ='app-contact'),

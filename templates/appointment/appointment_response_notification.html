@@ -13,6 +13,10 @@
   {% if user.is_patient %} 
     <p> Dear <b>{{ user.first_name }} {{ user.last_name }} </b>your appointment for {{ appointment.appointment_date }} had been responsed.  </p>
     <p> Response status <b> {{ appointment.status }}</b> </p>
+    <a href="{% url 'checkout' appointment.id %}"><button class='btn-primary'>Pay Bill</button></a>    
+    {% if appointment.status == "Confirmed" %}
+    
+    {% endif %}
   {% endif %} 
 <!-- end of if-->
 {% endblock %}

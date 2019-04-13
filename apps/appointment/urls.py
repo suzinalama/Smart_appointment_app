@@ -10,6 +10,7 @@ urlpatterns = [
     path('ajax/update-appointment-status/', views.appointment_status_update, name='update-appointment-status'),
     path('appoint', views.DoctorAppointmentListView.as_view(), name ='appoint'),
     path('prescription', views.PrescriptionView.as_view(), name ='prescription'),
+    path('prescription_detail/<int:pk>/', views.PrescriptionDetailView.as_view(), name='prescription_detail'),
     path("create-availability", views.AvailabilityCreateView.as_view(), name="create-availability"),
 
     path(

@@ -61,6 +61,7 @@ class AvailableTime(models.Model):
 
 
 
+
 class Notification(models.Model):
 	user = models.ForeignKey(User, on_delete=None)
 	message= models.TextField(max_length=1000)
@@ -89,6 +90,13 @@ class Prescription(models.Model):
      
 	def __str__(self):
 		return f"appointment_date: {self.appointment_date}"
+
+		
+	def get_absolute_url(self):
+		return "prescription_detail/%i/" % self.id
+
+	
+	
 	
 
 

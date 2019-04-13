@@ -1,4 +1,8 @@
 {% extends "partial/base.html" %}
+
+{% block header %}
+{% include "partial/header.html" %}
+{% endblock %}
 {% load crispy_forms_tags %}
 {% block content %}
     <div class="content-section">
@@ -18,22 +22,26 @@
             </small>
         </div>
     </div>
-    
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
    
-{% endblock content %}
-
 {% block script %}
 {% include "partial/script.html" %}
 
+{% endblock script %}
 <script>
+    
         $( function() {
             $( "#id_dob"  ).datepicker({
             changeMonth: true,
-            changeYear:true
+            changeYear:true,
+            yearRange: '1920:2014',
     },{dateFormat: "yy-mm-dd"});
         });
     </script>
-{% endblock script %}
+    
+
+{% endblock %}
+
 
 
 

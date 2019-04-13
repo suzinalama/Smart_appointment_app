@@ -48,7 +48,9 @@ class UserSignUp(View):
                     {
                         "user": user,
                         "domain": current_site.domain,
-                        "uid": urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                        # "uid": urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+
                         "token": PasswordResetTokenGenerator().make_token(user),
                     },
                 )

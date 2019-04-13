@@ -24,8 +24,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home/',include('apps.post.urls')),
+    path('',include('apps.post.urls')),
     path('user/',include('apps.user_profile.urls')),
+    path("payment/", include("apps.payment.urls")),
     path('appointment/', include('apps.appointment.urls')),
     path("api/notification", include("notifications.urls", namespace='notifications'))
     # path('account/', patient_views.account, name='account'),
