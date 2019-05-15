@@ -9,28 +9,28 @@
 {% endblock header %}
 
 {% block content %}
-
-    <div class="container">
-        <div class="row">
-
-            <h2>Checkout</h2>
-
+    <div class="content-section">
+            <legend class="border-bottom mb-4">Checkout</legend>
+            
             {% for message in messages %}
-                <p>{{ message }}</p>
+            <p>{{ message }}</p>
             {% endfor %}
 
+        <form method="POST" action="">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                
+                {{ form.as_table }}
 
-            <form action="" method="post">
-                <table>
-                    {% csrf_token %}
-                    {{ form.as_table }}
-                    <tr>
-                        <td></td>
-                        <td><input type="submit" value="Place Order"></td>
-                    </tr>
-                </table>
-            </form>
-        </div>
+            </fieldset>
+            <input type="hidden" name="appointment" value="{{appointment_id}}">
+            
+
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Place Order</button>
+            </div>
+        </form>
+      
     </div>
 
 {% endblock %}

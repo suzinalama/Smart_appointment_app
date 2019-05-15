@@ -35,9 +35,15 @@ class UserAppointmentForm(forms.ModelForm):
                 ).order_by("user")
             except (ValueError,TypeError):
                 pass
+
+        # elif self.instance.pk:
+        #     self.fields["doctor"].queryset =self.instance.department.doctor_set
+
+
         if "appointment_date" in self.data:
             self.fields["appointment_date"].input_formats=["%B %d, %Y"]
-    
+            
+
     def clean_appointment_date(self):
         data = self.cleaned_data.get('appointment_date')
         
@@ -67,7 +73,7 @@ class AvailabilityForm(forms.ModelForm):
 class PrescriptionForm(forms.ModelForm):
     class Meta:
         model= Prescription
-        fields = ('prescription',)
+        fields = ['prescription',]
         
 
 

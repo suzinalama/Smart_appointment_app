@@ -7,11 +7,17 @@
   <h6>Email: {{ user.email }}</h6>
   <h6>Gender: {{ user.gender }}</h6>
   <h6>Blood Group {{user.blood_groups}}</h6>
+  
+  
+  {% for edit in edits %}
+  <h5><a href="{% url 'info_edit' pk=edit.pk %}"> edit </a></h5>
+  {% endfor %}
+
   {% if user.role == 1 %}
   <ul class="list-group">
       <a href="{% url 'patient-report' %}" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">View Report</a><br>
       <a href="{% url 'appointment-add' %}" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">Book Appoinment</a><br>
-      <a href="{% url 'search' %}" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">Find a Doctor</a><br>
+      <a href="{% url 'doctor' %}" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">Find a Doctor</a><br>
       <a href="{% url 'logout' %}" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">Pay Bill</a><br>      
     </ul>
     {% elif user.role == 2 %}

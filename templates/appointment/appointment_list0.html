@@ -1,1 +1,25 @@
-Your appointment has been requested
+{% extends "partial/base.html" %}
+
+{%  block  header %}
+{% include 'partial/header.html' %}
+{% endblock %}
+
+{% block content %}
+<h4> Dear {{user.username}}, </h4>
+<h5>Your appointment has been requested</h5> 
+{% endblock %}
+
+{% block rightpane %}
+{%  if user.is_authenticated %} 
+
+{% include "user_profile/info.html" %}
+{% else %}
+
+{% include "partial/rightpane.html" %}
+
+{% endif %}
+{% endblock %}
+
+{% block script %}
+{% include "partial/script.html" %}
+{% endblock script %}

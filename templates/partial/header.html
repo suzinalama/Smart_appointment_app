@@ -1,5 +1,7 @@
 {% load static %}
+
 <header class="site-header">
+
     <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
       <div class="container">
         <a class="navbar-brand mr-4" href="{% url 'app-index' %}">Hospital App</a>
@@ -13,9 +15,13 @@
             <a class="nav-item nav-link" href="{% url 'app-services' %}">Our Services</a>
             <a class="nav-item nav-link" href="{% url 'app-contact' %}">Contact Us</a>
           </div>
+
+             
+          
+      
           <!-- Navbar Right Side -->
           
-            <div class="navbar-nav">
+ 
             
                   {% if user.is_authenticated %}
                   {% include "appointment/notification.html" %}
@@ -23,6 +29,17 @@
                   <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
                 
                   {% else %}
+
+                  <div class="navbar-nav">
+                      <div class="navbar-nav">
+                          <div class="col">
+                              <input class 
+                                  name="q" value="{{ request.GET.q }}" 
+                                  type="search"
+                                  placeholder="Search">
+                                  <a href="{% url 'search' %}" class="btn btn-outline-secondary btn-lg active" role="button" aria-pressed="true">Search</a><br>
+
+                          </div>
                     <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
                     <a class="nav-item nav-link" href="{% url 'register' %}">Sign Up</a>
                   {% endif %}

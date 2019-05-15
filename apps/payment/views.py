@@ -7,19 +7,23 @@ from django.views.decorators.csrf import csrf_exempt
 from apps.user_profile.models import Patient
 from django.shortcuts import render, redirect
 from .forms import CheckoutForm
+from apps.payment.models import Payment
 
 def process_payment(request):
     user = request.user
     print("patient id", user.id)
     patient = get_object_or_404(Patient, user=user.id)
     print("patient: ", patient)
-    appointment = get_object_or_404(Appointment, id=15, patient=patient)
+
+    appointment_id=request.session['appointment_id']
+    print('appointment: ', appointment_id)
+    appointment = get_object_or_404(Appointment, id = appointment_id, patient=patient)
     print("HERE:::")
     host = request.get_host()
 
     paypal_dict = {
         "business": settings.PAYPAL_RECEIVER_EMAIL,
-        "amount": 100,
+        "amount": request.session["appointment_fee"],
         "item_name": "Order {}".format(appointment.id),
         "invoice": str(appointment.id),
         "notify_url": "http://{}{}".format(host, reverse("paypal-ipn")),
@@ -36,6 +40,11 @@ def process_payment(request):
 
 
 def payment_done(request):
+    appointment_id=request.session["appointment_id"]
+    payment=Payment.objects.get(appointment = appointment_id)
+    payment.status = True
+    payment.save()
+
     return render(request, "payment/payment_done.html")
 
 
@@ -46,7 +55,8 @@ def checkout(request, id):
     if request.method == "POST":
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            cleaned_data = form.cleaned_data
+            request.session["appointment_fee"]=request.POST.get("appointment_fee")
+            request.session["appointment_id"] = id
             return redirect("process_payment")
     else:
         form = CheckoutForm()

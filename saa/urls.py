@@ -27,6 +27,7 @@ urlpatterns = [
     path('',include('apps.post.urls')),
     path('user/',include('apps.user_profile.urls')),
     path("payment/", include("apps.payment.urls")),
+    path("paypal/", include("paypal.standard.ipn.urls")),
     path('appointment/', include('apps.appointment.urls')),
     path("api/notification", include("notifications.urls", namespace='notifications'))
     # path('account/', patient_views.account, name='account'),

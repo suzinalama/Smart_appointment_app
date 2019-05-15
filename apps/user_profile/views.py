@@ -3,7 +3,7 @@ from .models import User,Doctor,Patient
 from apps.appointment.models import Availability,AvailableTime,Appointment
 from django.views import View
 from .forms import SignUpForm#,UserAppointmentForm
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView,DetailView
 from django.views.generic.base import RedirectView
 from django.template.loader import render_to_string
 from django.contrib.auth import login, authenticate
@@ -13,6 +13,9 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.http import HttpResponse, HttpResponseRedirect
+from apps.appointment.models import Prescription
+from django.shortcuts import get_object_or_404
 
 
 class UserLoginView(View):
@@ -91,22 +94,62 @@ def user_activate(request, uidb64, token):
 # def account(request):
 # 	return render(request,'user_profile/account.html')
 
-class UserReportView(View):
-    report_template="user_profile/patient_report.html"
-    def get(self,request):
-        return render(request, self.report_template)
+class ReportListView(ListView):
+    model = Prescription
+    template_name="user_profile/patient_report.html"  
+    context_object_name="report_list"
+    login_url="/user/login"
+
+    def test_func(self):
+        return self.request.user.is_patient()
+
+    def get_queryset(self):
+        patient=Patient.objects.get(user_id=self.request.user)
+        return Prescription.objects.filter(patient_id = patient )
+
+
+class UserReportDetailView(DetailView):
+    model = Prescription
+    template_name="user_profile/report_detail.html"
+    context_object_name="report"
+
+    
+    def get(self,request,*args,**kwargs):
+        report = get_object_or_404(Prescription,pk=kwargs['pk'])
+        print("Report: ",report)
+        return render(request, self.template_name, {'report': report} )
+
+
 
 class UserInfoView(View):
     info_template="user_profile/info.html"
     def get(self,request):
         return render(request, self.info_template)
 
+
 class InfoEditView(View):
-    info_template="user_profile/info_edit.html"
+    model = User
+    template_name="user_profile/info.html"
+    context_object_name="edit"
+    login_url="/user/login"
+
+    def get(self,request,*args,**kwargs):
+        edit = get_object_or_404(User,pk=kwargs['pk'])
+        print("User: ", edit)
+        return render(request, self.template_name, {'edit': edit} )
+
+
+class DoctorsListView(ListView):
+    model=Doctor
+    paginate_by=10
+    template_name="user_profile/search.html"
+    
     def get(self,request):
-        return render(request, self.info_template)
-
-
+        context = {
+            'doctors': Doctor.objects.all()
+        }
+        
+        return render(request, self.template_name,context)
 
 
 class DoctorSearchListView(ListView):
@@ -114,6 +157,13 @@ class DoctorSearchListView(ListView):
     paginate_by=10
     template_name="user_profile/search.html"
     context_object_name="searches"
+    
+    # def get(self,request):
+    #     context = {
+    #         'doctors': Doctor.objects.all()
+    #     }
+        
+    #     return render(request, self.template_name,context)
 
     def get_queryset(self):
         keywords=self.request.GET.get("q")
@@ -130,6 +180,7 @@ class DoctorSearchListView(ListView):
             qs=qs.annotate(rank=SearchRank(vectors,query)).order_by("education")
 
         return qs
+
 
 
 

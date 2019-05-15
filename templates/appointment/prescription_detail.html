@@ -4,16 +4,16 @@
 
 
     <div class="content-section">
-            {% for detail in details %}
-             <h4 class="border-bottom mb-4">Prescription for {{ detail.user}} </h4>
+         
+             <h4 class="border-bottom mb-4">Prescription for {{ patient.user}} </h4>
              <legend class="border-bottom mb-4"> Patient Details: </legend>
-             <h6>Name: {{ detail.user.first_name.capitalize }} {{ detail.user.last_name.capitalize }}</h6>
-             <h6>Date of Birth: {{ detail.user.dob }}</h6>
-             <h6>Email: {{ detail.user.email }}</h6>
-             <h6>Gender: {{ detail.user.gender }}</h6>
-             <h6>Blood Group {{detail.user.blood_groups}}</h6>
+             <h6>Name:{{appointment.patient.user.first_name.capitalize}} {{appointment.patient.user.last_name.capitalize}}</h6>
+             <h6>Date of Birth: {{ appointment.patient.user.dob }}</h6>
+             <h6>Email: {{ appointment.patient.user.email }}</h6>
+             <h6>Gender: {{ appointment.patient.user.gender }}</h6>
+             <h6>Blood Group: {{ appointment.patient.user.blood_groups}}</h6>
              
-            {% endfor %}
+          
 
          
                     <form method="POST">
@@ -21,9 +21,12 @@
                         <fieldset class="form-group"> 
                             {{ form|crispy }}
                         </fieldset>
+                        <input type="hidden" name="patient" value="{{appointment.patient.pk}}">
+                        <input type="hidden" name="appointment" value="{{appointment.pk}}">
+
                         <input type="hidden" name="next" value="{{ next }}">
                         <div class="form-group">
-                            <button class="btn btn-outline-info" type="submit">Send Prescription</button>
+                        <button class="btn btn-outline-info" type="submit"> Send Prescription</button>
                         </div>
                     </form>
                     

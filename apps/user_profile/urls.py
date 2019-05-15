@@ -1,17 +1,20 @@
 from django.urls import path,re_path
 from django.contrib.auth import views
-from .views import UserAccountActivationSent, UserSignUp,user_activate,UserReportView,InfoEditView,DoctorSearchListView,UserInfoView
+from .views import UserAccountActivationSent, UserSignUp,user_activate,DoctorSearchListView,UserInfoView,ReportListView,UserReportDetailView,InfoEditView,DoctorsListView #,InfoEditView
 
 
 
 urlpatterns = [
     path('login', views.LoginView.as_view(template_name="user_profile/login.html"), name ='login'),
     path('logout', views.LogoutView.as_view(template_name="user_profile/logout.html"), name ='logout'),
-    path('patient-report', UserReportView.as_view(), name ='patient-report'),
+    path('patient-report', ReportListView.as_view(), name ='patient-report'),
+    path('report_detail/<int:pk>/', UserReportDetailView.as_view(), name ='report_detail'),
     path('register', UserSignUp.as_view(), name ='register'),
     path('search',  DoctorSearchListView.as_view(), name ='search'),
+    path('doctor',  DoctorsListView.as_view(), name ='doctor'),
+
     path('info',  UserInfoView.as_view(), name ='info'),
-    path('info-edit', InfoEditView.as_view(), name ='info-edit'),
+    path('info_edit/<int:pk>/', InfoEditView.as_view(), name ='info_edit'),
 
     path(
         'password-reset', 

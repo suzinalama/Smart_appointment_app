@@ -53,7 +53,7 @@ class Availability(models.Model):
 		verbose_name_plural="availabilities"
 
 class AvailableTime(models.Model):
-	timeslot=models.ForeignKey(TimeSlot,on_delete=models.CASCADE,related_name="available_time")
+	timeslot = models.ForeignKey(TimeSlot,on_delete=models.CASCADE,related_name="available_time")
 	availability = models.ForeignKey(
 		Availability, on_delete=models.CASCADE,related_name="available_time"
 	)
@@ -75,25 +75,35 @@ class Appointment(models.Model):
 	STATUS_CODES = ((CONFIRMED, "Confirmed"), (CANCELLED, "Cancelled"), (WAITING, "Waiting"))
 	appointment_date = models.DateField()
 	#appointment_date = models.OneToOneField(Availability, on_delete=models.CASCADE )
+	# appointment_no = models.AutoField( default=1, primary_key=True)
 	status = models.PositiveSmallIntegerField(choices=STATUS_CODES,default=WAITING)
 	patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
 	department = models.ForeignKey(Department, on_delete=models.CASCADE)
 	doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-	timeslot = models.OneToOneField(TimeSlot, on_delete=models.CASCADE,null=True)
+	timeslot = models.OneToOneField(TimeSlot, on_delete=models.SET_NULL,null=True)
+	
+	# def get_absolute_url(self):
+	# 	return "prescription_detail/%i/" % self.patient_id
+
+	# def number():
+	# 	no = Appointment.objects.all().aggregate(Max(order))
+	# 	if no == None:
+	# 		return 1
+	# 	else:
+	# 		return no + 1
 
 
 class Prescription(models.Model):
 	patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-	appointment_date=models.DateField()
+	appointment=models.OneToOneField(Appointment, on_delete=models.CASCADE)
 	prescription=models.CharField(max_length=1000)
 	doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
      
 	def __str__(self):
-		return f"appointment_date: {self.appointment_date}"
+		return f"prescription: {self.prescription}"
 
 		
-	def get_absolute_url(self):
-		return "prescription_detail/%i/" % self.id
+
 
 	
 	

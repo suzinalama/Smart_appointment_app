@@ -1,5 +1,10 @@
 {% extends "partial/base.html" %}
 {% load crispy_forms_tags %}
+
+{%  block  header %}
+{% include 'partial/header.html' %}
+{% endblock %}
+
 {% block content %}
 <head>
          
@@ -9,9 +14,8 @@
 
 
     <div class="content-section">
-
-   
-                <div class="col-12 col-md-10 col-lg-8">
+              <div class="col-12 col-md-10 col-lg-8">
+                    <div class="search">
                     <form class="card card-sm" method="GET" action="{% url 'search' %}">
                         
                         <div class="card-body row no-gutters align-items-center">
@@ -28,40 +32,75 @@
                             
                             <div class="col-auto">
                                 <button class="btn btn-lg btn-success" type="submit">Search</button>
+
                             </div>
                            
                         </div>
                     </form>
                 </div>
+              </div>
             
         
-        <div class="border-top pt-3">
+        <div class="border-top-pt-3">
           
-            <h3>Search Result</h3>
             {% if searches|length == 0 %}
             
-          
-            <h6> No record found </h6>
+           
+            {% for doctor in doctors %}
+            
+           
+           
+            <article class="content">
+                    
+                    <div class="d-inline-block">
+                    <div class="doctor-info">
+                        <img class="img-thumbnail" alt="profile picture" src="{{ doctor.user.profile_pic.url }}">
+
+                      <div class="doctor-metadata">
+                        <ol class="text-capitalize"> Dr.{{ doctor.user.first_name}} {{ doctor.user.last_name}}</ol>
+
+                        <ol class="text-capitalize"> Username: {{ doctor.user.username}}</ol>
+                        <ol class="text-capitalize"> Department: {{ doctor.department}}</ol>
+                        <ol class="text-capitalize"> Education: {{ doctor.education}}</ol>
+                    </div>
+                </div>
+                </div>
+            
+            </article>
+
+                
+                    
+                  
+            {% endfor %}
+            
+            <!-- <h3>Search Result</h3>
+
+            <h6> No record found </h6> -->
+           
             
             {% else %}
             {% for search in searches %}
             
            
-           
-            <article class="media content-section">
-                    <div class="media">
+  
+            
+                  <article class="content">
+                    
+                        <div class="d-inline-block">
+                        <div class="doctor-info">
                             <img class="img-thumbnail" alt="profile picture" src="{{ search.user.profile_pic.url }}">
-                    <div class="media-body">       
-                      <div class="article-metadata">
-                        <ol class="text-capitalize"> Username: {{ search.user.username}}</ol>
-                        <ol class="text-capitalize"> Name: {{ search.user.first_name}} {{ search.user.last_name}}</ol>
-                       
-                        <ol class="text-capitalize"> Department: {{ search.department}}</ol>
-                        <ol class="text-capitalize"> Education: {{ search.education}}</ol>
-                      </div>
-                      
+    
+                          <div class="doctor-metadata">
+                            <ol class="text-capitalize"> Dr.{{ search.user.first_name}} {{ search.user.last_name}}</ol>
+    
+                            <ol class="text-capitalize"> Username: {{ search.user.username}}</ol>
+                            <ol class="text-capitalize"> Department: {{ search.department}}</ol>
+                            <ol class="text-capitalize"> Education: {{ search.education}}</ol>
+                        </div>
                     </div>
-                  </article>
+                    </div>
+                
+                </article>
             {% endfor %}
             {% endif %}
 

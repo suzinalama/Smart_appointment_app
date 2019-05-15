@@ -5,7 +5,7 @@
 <!-- load crispy tag -->
 {% load crispy_forms_tags %}
 <!-- header block -->
-{% block header%} {% include "appointment/notification.html" %} {% endblock %}
+{% block header%} {% include "partial/header.html" %} {% endblock %}
 
 <!-- appointment list -->
 
@@ -17,6 +17,7 @@
   <thead>
     <tr>
       <th scope="col">#</th>
+      <th scope="col">Patient</th>
       <th scope="col">Date</th>
       <th scope="col">status</th>
       <th scope="col">Start at</th>
@@ -27,11 +28,12 @@
   <tbody>
     <tr>
       <th scope="row">1</th>
+      <td> {{appointment.patient}}</td>
       <td>{{ appointment.appointment_date }}</td>
       <td>
         {% if appointment.status == 3 %}Waiting{% endif %}
         <!-- cancel  -->
-        {% if appointment.status == 2 %}Canceled{% endif %}
+        {% if appointment.status == 2 %}Cancelled{% endif %}
         <!-- confirm  -->
         {% if appointment.status == 1 %}Confirmed{% endif %}
       </td>
@@ -53,6 +55,7 @@
           <div class="dropdown-menu">
             {% if appointment.status == 3 %}
             <a
+              id = "cancel_status"
               class="dropdown-item action-status"
               data-status-update-url="{% url 'update-appointment-status' %}"
               data-status="2"
@@ -61,6 +64,7 @@
               >Cancel</a
             >
             <a
+              id = "action_confirm"
               class="dropdown-item action-status"
               data-status-update-url="{% url 'update-appointment-status' %}"
               data-status="1"
@@ -80,17 +84,42 @@
 <!-- end of if-->
 {% endblock %}
 
-{% block rightpane %} 
-{% include "partial/rightpane.html" %} 
-{%endblock %}
+{% block rightpane %}
+{% include "user_profile/info.html" %}
+{% endblock %}
 
 {% block script %} 
 {% include "partial/script.html" %}
 <script>
-  $('.action-status').on('click', function(e) {
-    var appointment_id = $('.action-status').data('appointment-id');
-    var url = $('.action-status').data('status-update-url'); // get the url of the `load_doctors` view
-    var status = $('.action-status').data('status'); // get the selected department ID from the HTML input
+ $('#cancel_status').on('click', function () {
+      if (confirm('Are you sure you want to cancel the appointment?')) {
+        var url=$('#cancel_status').attr('data-select-status');
+        var appointment_id = $(this).data("appointment-id")
+        console.log("cancel" + appointment_id + url)
+        var status = 2;
+        $.ajax({                       
+            url: url,                   
+            data: {
+              status:status,
+              appointment_id:appointment_id,
+                  },
+            success: function (data) {   
+              setTimeout(function(){
+                location.reload();
+              }, 1000); //reload time
+            }
+          });}
+          else {
+           return false;
+         }
+
+    
+        });
+
+  $('#action_confirm').on('click', function(e) {
+    var appointment_id = $('#action_confirm').data('appointment-id');
+    var url = $('#action_confirm').data('status-update-url'); // get the url of the `load_doctors` view
+    var status = $('#action_confirm').data('status'); // get the selected department ID from the HTML input
     $.ajax({
       url: url,
       data: {
@@ -106,3 +135,4 @@
   });
 </script>
 {% endblock %}
+

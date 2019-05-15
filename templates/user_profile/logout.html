@@ -1,9 +1,34 @@
-{% extends "partial/base.html" %}
-{% block content %}
-    <h2> You are currently logged out </h2>
-    <div class="border-top pt-3">
-        <small class="text-muted">
-             <a href="{% url 'login' %}">login</a>
-        </small>
-    </div>
-{% endblock content %}
+ {% extends "partial/base.html" %}
+ {% load crispy_forms_tags %}
+    {% block header %}
+    {% include "partial/header.html" %}
+    {% endblock %}
+    {% block content %}
+        <div class="content-section">
+            <form method="POST">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    
+                    <legend class="border-bottom mb-4"> You are currently logged out</legend>
+                    
+    
+                </fieldset>
+                
+                <div class="form-group">
+                    <a href="{% url 'login' %}" class="btn btn-outline-info active" role="button" aria-pressed="true">Login Again</a>
+                </div>
+                    
+                
+            </form>
+            <div class="border-top pt-3">
+                <small class="text-muted">
+                    Create A New Account? <a class="ml-2" href="{% url 'register' %}">Sign Up</a><br>
+                    Forgot password? <a class="ml-2" href="{% url 'password-reset' %}">Reset Password</a>
+                </small>
+            </div>
+        </div>
+    {% endblock content %}
+    
+    {% block rightpane %}
+        {% include "partial/rightpane.html" %}
+    {% endblock rightpane %}

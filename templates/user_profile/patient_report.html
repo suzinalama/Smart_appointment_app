@@ -1,15 +1,55 @@
 {% extends "partial/base.html" %}
-{% load crispy_forms_tags %}
-{% block content %}
-    <div class="content-section">
-        <form method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Your Report</legend>
-                {{ form|crispy }}
-            </fieldset>
-           
-        </form>
-       
-    </div>
+{% load static %}
+
+{% block header%}
+{% include "partial/header.html" %}
 {% endblock %}
+{% block content %}
+<!-- Check length for available appointment -->
+{% if report_list|length == 0 %}
+<li class="list-group-item">No report available</li>
+
+
+{% else %}
+
+
+
+<table class="table table-hover">
+    <thead >
+      <tr>
+      
+      
+        <th scope="col">#</th>
+        <th scope="col">Appointment Date</th>
+        <th scope="col">Department</th>
+        <th scope="col">Doctor</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+    {% for report in report_list %}
+<tr>
+        <td>#</td>
+    <td><a href="{% url 'report_detail' pk=report.pk %}">{{report.appointment.appointment_date}} </a></td>
+    <td>{{report.doctor.department}}</td>
+    <td>Dr. {{ report.doctor.user.first_name.capitalize }} {{ report.doctor.user.last_name.capitalize }}</td>
+    
+    
+
+</tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+{% endblock  %}
+
+  {% block script %}
+  {% include "partial/script.html" %}
+{% endblock script %}
+
+    {% block rightpane %}
+{% include 'user_profile/info.html' %}
+{% endblock %}
+
+
+

@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'phone_field',
     'apps.post',
     'apps.payment',
-
+    'paypal.standard.ipn',
 
 ]
 
@@ -153,3 +153,6 @@ CRISPY_TEMPLATE_PACK='bootstrap4'
 MEDIA_URL='/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #LOGIN_REDIRECT_URL = 'app-index'
+
+PAYPAL_RECEIVER_EMAIL = "suzinalama5-facilitator@gmail.com"
+PAYPAL_TEST= True

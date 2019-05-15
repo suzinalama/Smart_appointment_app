@@ -15,15 +15,19 @@ from django.shortcuts import get_object_or_404
 
 from notifications.signals import notify
 import datetime
+from notifications.models import Notification
 
 from django.http import HttpResponse, HttpResponseRedirect
-
+from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin,
     UserPassesTestMixin,
 )
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+
 
 class AppointmentListView(ListView):
     model =Appointment
@@ -50,6 +54,8 @@ class AppoinmentCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         available_timeslot_id = form.data.get("available_timeslot_id")
         doctor_id=form.data.get("doctor")
         print("available_timeslot_id: ",available_timeslot_id)
+        
+
         available_timeslot = AvailableTime.objects.get(pk=available_timeslot_id)
         print("Timeslot ",available_timeslot.status)
         available_timeslot.status = False
@@ -120,16 +126,12 @@ class DoctorAppointmentListView(ListView):
 
     def get_queryset(self):
         doctor=Doctor.objects.get(user_id=self.request.user)
-      
-      
         return Appointment.objects.filter(doctor_id=doctor )
 
-    
- 
+   
 @transaction.atomic
 def appointment_status_update(request):
     status=request.GET.get("status")
-    
 
     appointment_id=request.GET.get("appointment_id")
     print(request.GET)
@@ -137,6 +139,10 @@ def appointment_status_update(request):
     update_appointment= Appointment.objects.get(id=appointment_id)
     update_appointment.status = status
     update_appointment.save()
+
+    
+    # response = redirect("notifications:mark_as_read", slug=slug)
+
     patient = User.objects.get(pk=update_appointment.patient.pk)
     if int(status) == 1 :
         verb="appointment confirmed"
@@ -149,11 +155,14 @@ def appointment_status_update(request):
     print(dir(update_appointment))
     print("info>>>>>>>>>>>>>>>>>>>>>>", update_appointment.patient,update_appointment.doctor )
     doctor=Doctor.objects.get(user_id=request.user)
+
     
     #list of filtered appointments
-    appointment_list= Appointment.objects.filter(doctor_id=doctor,patient_id=patient)
+    appointment_list= Appointment.objects.filter(doctor_id=doctor)
     
     return render(request,"appointment/doctor_appointment.html",{"appointment_list":appointment_list})
+
+
 
 class AvailabilityCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     login_url = "/users/login/"
@@ -237,24 +246,72 @@ def patient_response_notification(request):
 class PrescriptionView(CreateView):
     model = Prescription
     form_class= PrescriptionForm
-    prescription_table="appointment/prescription.html" 
+    prescription_table="appointment/prescription_detail.html" 
     context_object_name="prescription"
 
     def get(self,request):
+     
         context = {
-			'details': Patient.objects.all()
-		}
+		    'details': Patient.objects.all()
+	    }
 	
         return render(request, self.prescription_table,context)
+ 
 
-class PrescriptionDetailView(DetailView):
+class PrescriptionDetailView(View):
     model = Prescription
-    pres_detail_template="appointment/prescription_detail.html"
+    form_class = PrescriptionForm
+    template_name="appointment/prescription_detail.html"
     context_object_name = 'prescription'
-    
-    def catalog_detail_view(request, primary_key):
-        catalog = get_object_or_404(Prescription, pk=primary_key)
-        return render(request, pres_detail_template , context={'catalog': catalog})
-	
 
-    
+
+    def get(self,request,*args,**kwargs):
+        appointment=get_object_or_404(Appointment,pk=kwargs['pk'])
+        print("Appointment: ",appointment)
+        return render(request, self.template_name, {'form':self.form_class,'appointment':appointment} )
+
+    @transaction.atomic
+    def post(self,request,pk):
+        if request.method == 'POST':
+            
+            data = request.POST
+            prescription = data.get('prescription')
+            patient_id = data.get('patient')
+
+            print("data>>>>>>>>>>",data)
+            patient=Patient.objects.get(pk=patient_id)
+
+            appointment_id = data.get('appointment')
+            print("appointment:>>>> ", type(appointment_id),appointment_id)
+            appointment=Appointment.objects.get(pk=appointment_id)
+            
+            doctor=Doctor.objects.get(pk=request.user)
+            print("Patient: ",patient)
+            prescription = Prescription.objects.create(prescription=prescription,patient=patient,doctor=doctor,appointment=appointment)
+
+
+            current_site = get_current_site(request)
+            subject = " Prescription received "
+            message = render_to_string(
+                "appointment/common/email_prescription.html",
+                    {
+                        "patient": patient,
+                        "prescription": prescription,
+                        "doctor": doctor
+
+                        #"domain": current_site.domain,
+                        #"uid": urlsafe_base64_encode(force_bytes(patient.pk)),
+                        # "uid": urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+
+                       
+                    },
+            )
+            patient.user.email_user(subject, message)
+            return render(request, self.template_name)
+
+        else:
+            return render(request, self.template_name)
+
+
+         
+       

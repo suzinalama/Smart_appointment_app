@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm , UserChangeForm
+from django.contrib.auth.forms import UserCreationForm , UserChangeForm #,UpdateProfileForm
 from apps.user_profile.models import User
 from django.contrib.admin.widgets import AdminDateWidget
 from apps.user_profile.models import User
@@ -40,11 +40,8 @@ class UserChangeForm(forms.ModelForm):
 
     def clean_password(self):
         return self.initial['password']
-# class CustomUserCreationForm(UserCreationForm):
+        
 
-#     class Meta(UserCreationForm.Meta):
-#         model = User
-#         fields =  ('username','first_name','last_name','email','gender','dob','blood_groups')
         
 
 # class CustomUserChangeForm(UserChangeForm):
@@ -84,3 +81,15 @@ class SignUpForm(UserCreationForm):
         # A user was found with this as a username, raise an error.
         raise forms.ValidationError('This email address is already in use.')
 
+# class UpdateProfileForm(forms.ModelForm):
+
+#     class Meta:
+#         model = User
+#         fields =  ('username','first_name','last_name','email','gender','dob','blood_groups')
+
+#     def save(self, user=None):
+#         user_profile = super(UpdateProfileForm, self).save(commit=False)
+#         if user:
+#             user_profile.user = user
+#         user_profile.save()
+#         return user_profile

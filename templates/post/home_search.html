@@ -1,0 +1,33 @@
+{% load static %} 
+        
+        <div class="border-top pt-3">
+          
+            <h3>Search Result</h3>
+            {% if searches|length == 0 %}
+            
+          
+            <h6> No record found </h6>
+            
+            {% else %}
+            {% for search in searches %}
+            
+            <article class="media content-section">
+                    <div class="media">
+                            <img class="img-thumbnail" alt="profile picture" src="{{ search.user.profile_pic.url }}">
+                    <div class="media-body">       
+                      <div class="article-metadata">
+                        <ol class="text-capitalize"> Username: {{ search.user.username}}</ol>
+                        <ol class="text-capitalize"> Name: {{ search.user.first_name}} {{ search.user.last_name}}</ol>
+                       
+                        <ol class="text-capitalize"> Department: {{ search.department}}</ol>
+                        <ol class="text-capitalize"> Education: {{ search.education}}</ol>
+                      </div>
+                      
+                    </div>
+                  </article>
+            {% endfor %}
+            {% endif %}
+
+        </div>
+
+    </div>

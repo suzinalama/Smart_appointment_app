@@ -5,25 +5,40 @@
 <!-- load crispy tag -->
 {% load crispy_forms_tags %}
 <!-- header block -->
-{% block header%} {% include "appointment/notification.html" %} {% endblock %}
+{% block header%} {% include "partial/header.html" %} {% endblock %}
+
+
 <!-- appointment list -->
 
 {% block content %}
 <!-- length of appointments -->
   {% if user.is_patient %} 
-    <p> Dear <b>{{ user.first_name }} {{ user.last_name }} </b>your appointment for {{ appointment.appointment_date }} had been responsed.  </p>
-    <p> Response status <b> {{ appointment.status }}</b> </p>
-    <a href="{% url 'checkout' appointment.id %}"><button class='btn-primary'>Pay Bill</button></a>    
+  <div class="content-section">
+          <fieldset class="form-group">
+              
+              <legend class="border-bottom mb-4"> Appointment Response</legend>
+              <p> Dear <b>{{ user.first_name }} {{ user.last_name }} </b>your appointment for {{ appointment.appointment_date }} had been responsed.  </p>
+              <p> Response status <b> {{ appointment.status }}</b> </p>
+      
+          </fieldset>
+          <div class="form-group">
+              <a href="{% url 'checkout' appointment.id %}" class="btn btn-outline-info active" role="button" aria-pressed="true">Pay Bill</a>
+          </div>
+      
+  </div>
+
+
+
     {% if appointment.status == "Confirmed" %}
     
     {% endif %}
+
+
   {% endif %} 
 <!-- end of if-->
 {% endblock %}
 
-{% block rightpane %} 
-{% include "partial/rightpane.html" %} 
-{%endblock %}
+
 
 {% block script %} 
 {% include "partial/script.html" %}
@@ -48,4 +63,8 @@
     });
   });
 </script>
+{% endblock %}
+
+{% block rightpane %}
+{% include "user_profile/info.html" %}
 {% endblock %}

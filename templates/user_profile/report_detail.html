@@ -1,0 +1,11 @@
+
+
+<h4> Report Of: {{ report.patient.user.first_name.capitalize}} {{ report.patient.user.last_name.capitalize}} </h4>
+<h4>Prescription: </h4>
+{{ report.prescription }}
+
+
+<h4>Prescripted By:</h4>
+<h5>Dr. {{ report.doctor.user.first_name.capitalize}} {{ report.doctor.user.last_name.capitalize}}</h5>
+<h5>Department: {{ report.doctor.department }}</h5>
+<h5>ABC Hospital </h5>

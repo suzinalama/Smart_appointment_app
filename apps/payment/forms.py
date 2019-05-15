@@ -12,7 +12,7 @@ class CartForm(forms.Form):
 
 class CheckoutForm(forms.ModelForm):
     appointment_fee = forms.CharField(
-    widget=forms.TextInput(attrs={"readonly": "readonly", "value": 500})
+    widget=forms.TextInput(attrs={"readonly": "readonly", "value": 150})
     )
 
     class Meta:
